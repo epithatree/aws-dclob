@@ -36,10 +36,8 @@ public class ControllerConfig {
         while (true) {
             if (controllerConfig.controllerNetwork.hasMessage()) {
                 controllerConfig.piManager.executeMessage(controllerConfig.controllerNetwork.nextMessage());
-            } else {
-                if (controllerConfig.symbolAssignment.pisAvailable())
-                    controllerConfig.messageReader.ReadAndSendNextMessage();
-            }
+            } else if (controllerConfig.symbolAssignment.pisAvailable())
+                controllerConfig.messageReader.readAndSendNextMessage();
         }
     }
 

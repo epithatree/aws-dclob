@@ -21,7 +21,7 @@ public class MessageReader {
         this.messageQueue = messageQueue;
     }
 
-    public void ReadAndSendNextMessage() {
+    public void readAndSendNextMessage() {
 
         ControllerMessage nextMessage = messageQueue.poll();
         if (nextMessage != null) {
