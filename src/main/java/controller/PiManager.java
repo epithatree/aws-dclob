@@ -28,7 +28,7 @@ public class PiManager {
     private void piDown(String piId) {
         if (listOfPies.contains(piId)) {
             String newPi = symbolAssignment.removePi(piId);
-            List<byte[]> newOrders = messageHistory.piDown(piId, newPi);
+            List<String> newOrders = messageHistory.piDown(piId, newPi);
             messageSender.sendMessage(newOrders, newPi);
         }
     }
@@ -37,8 +37,8 @@ public class PiManager {
         messageHistory.orderCompleted(orderId, piId);
     }
 
-    public void executeMessage(byte[] message) {
-        ByteBuffer bb = ByteBuffer.wrap(message);
+    public void executeMessage(String message) {
+        ByteBuffer bb = null;
         int messageType = bb.get();
         int orderId = 0;
         if (messageType == 3) {
@@ -54,7 +54,6 @@ public class PiManager {
         if (messageType == 3) {
             orderConfirmed(orderId, piId);
         }
-        ;
 
     }
 

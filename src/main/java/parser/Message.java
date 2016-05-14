@@ -3,10 +3,10 @@ package parser;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"timeStamp", "messageType", "orderId", "size", "price", "direction"})
-public class Message {
+class Message {
     private double timeStamp;
     private MessageType messageType;
-    private long orderId;
+    private int orderId;
     private int size;
     private long price;
     private Direction direction;
@@ -20,7 +20,7 @@ public class Message {
         return messageType;
     }
 
-    public long getOrderId() {
+    public int getOrderId() {
         return orderId;
     }
 
@@ -44,7 +44,7 @@ public class Message {
         this.messageType = parseMessageType(messageType);
     }
 
-    public void setOrderId(long orderId) {
+    public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
 

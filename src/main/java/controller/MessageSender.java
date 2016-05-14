@@ -1,7 +1,5 @@
 package controller;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class MessageSender {
@@ -11,19 +9,13 @@ public class MessageSender {
         this.controllerNetwork = controllerNetwork;
     }
 
-    void sendMessage(byte[] newOrders, String newPi) {
-//		controllerNetwork.send((newOrders), newPi);
-        //System.out.println(new String(newPi.toString().getBytes()));
-        System.out.println(Arrays.toString(newOrders));
+    void sendMessage(String newOrders, String newPi) {
+        controllerNetwork.send((newOrders), newPi);
     }
 
-
-    void sendMessage(List<byte[]> newOrders, String newPi) {
-        for (byte[] newOrder : newOrders) {
+    void sendMessage(List<String> newOrders, String newPi) {
+        for (String newOrder : newOrders) {
             sendMessage(newOrder, newPi);
         }
-
     }
-
-
 }
