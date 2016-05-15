@@ -10,12 +10,12 @@ public class MessageSender {
     }
 
     void sendMessage(String newPi, String newOrders) {
-        controllerNetwork.send(newOrders, newPi);
+        controllerNetwork.send(newPi, newOrders);
     }
 
     void sendMessage(String newPi, List<String> newOrders) {
         for (String newOrder : newOrders) {
-            sendMessage(newOrder, newPi);
+            sendMessage(newPi, newOrder);
         }
     }
 }

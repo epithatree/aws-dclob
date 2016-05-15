@@ -4,7 +4,7 @@ import controller.ControllerNetwork;
 
 public class ActiveMqControllerNetwork implements ControllerNetwork {
     @Override
-    public void send(String msg, String identity) {
+    public void send(String identity, String msg) {
 
     }
 

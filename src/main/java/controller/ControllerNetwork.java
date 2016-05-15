@@ -2,7 +2,7 @@ package controller;
 
 public interface ControllerNetwork {
 
-    void send(String msg, String identity);
+    void send(String identity, String msg);
 
     boolean hasMessage();
 
