@@ -80,7 +80,7 @@ public class PiManager {
     private void piUp(String piId) {
         if (!listOfPies.contains(piId)) {
             listOfPies.add(piId);
-            symbolAssignment.add(piId);
+            symbolAssignment.addPi(piId);
         } else {
             log.warn("Received PiUp notification for {}, that pi was already listed as running.", piId);
         }

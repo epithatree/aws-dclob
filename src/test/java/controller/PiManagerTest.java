@@ -44,7 +44,7 @@ public class PiManagerTest {
         PiManager piManager = new PiManager(messageSender, symbolAssignment, messageHistory);
         piManager.executeMessage("{\"messageType\":\"PiUp\",\"piId\":\"Pi1\",\"orderId\":1021684525655}");
         verifyZeroInteractions(messageSender);
-        verify(symbolAssignment).add("Pi1");
+        verify(symbolAssignment).addPi("Pi1");
         verifyZeroInteractions(messageHistory);
     }
 
@@ -54,7 +54,7 @@ public class PiManagerTest {
         piManager.executeMessage("{\"messageType\":\"PiUp\",\"piId\":\"Pi1\",\"orderId\":1021684525655}");
         piManager.executeMessage("{\"messageType\":\"PiUp\",\"piId\":\"Pi1\",\"orderId\":1021684525655}");
         verifyZeroInteractions(messageSender);
-        verify(symbolAssignment).add("Pi1");
+        verify(symbolAssignment).addPi("Pi1");
         verifyZeroInteractions(messageHistory);
     }
 
@@ -64,7 +64,7 @@ public class PiManagerTest {
         piManager.executeMessage("{\"messageType\":\"PiUp\",\"piId\":\"Pi1\",\"orderId\":1021684525655}" +
                 "{\"messageType\":\"PiUp\",\"piId\":\"Pi1\",\"orderId\":1021684525655}");
         verifyZeroInteractions(messageSender);
-        verify(symbolAssignment).add("Pi1");
+        verify(symbolAssignment).addPi("Pi1");
         verifyZeroInteractions(messageHistory);
     }
 
