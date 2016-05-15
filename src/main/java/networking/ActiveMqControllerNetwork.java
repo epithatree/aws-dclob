@@ -23,7 +23,7 @@ public class ActiveMqControllerNetwork implements ControllerNetwork {
 
     public ActiveMqControllerNetwork() {
         connectionFactory = new ActiveMQConnectionFactory(
-                "http://ec2-54-186-32-210.us-west-2.compute.amazonaws.com/");
+                "tcp://ec2-54-186-32-210.us-west-2.compute.amazonaws.com:61616");
         producerMap = new HashMap<>();
         messageQueue = new LinkedList<>();
     }
