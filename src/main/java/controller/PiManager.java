@@ -1,21 +1,76 @@
 package controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import lombok.extern.log4j.Log4j2;
 
+import java.io.IOException;
+import java.util.*;
+
+@Log4j2
 public class PiManager {
 
-    private MessageSender messageSender;
-    private SymbolAssignment symbolAssignment;
-    private MessageHistory messageHistory;
-    private List<String> listOfPies;
+    private final MessageSender messageSender;
+    private final SymbolAssignment symbolAssignment;
+    private final MessageHistory messageHistory;
+    private final Set<String> listOfPies;
 
+    private final ObjectReader reader;
 
     public PiManager(MessageSender messageSender, SymbolAssignment symbolAssignment, MessageHistory messageHistory) {
         this.messageSender = messageSender;
         this.symbolAssignment = symbolAssignment;
         this.messageHistory = messageHistory;
-        listOfPies = new ArrayList<>();
+        
+        listOfPies = new HashSet<>();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        reader = objectMapper.readerFor(NetworkControlMessage.class);
+    }
+
+    public void executeMessage(String rawMessage) {
+        Optional<NetworkControlMessage> optionalMessage = parseMessage(rawMessage);
+        if (!optionalMessage.isPresent()) {
+            log.warn("Unable to process message");
+            return;
+        }
+        NetworkControlMessage message = optionalMessage.get();
+
+        String piId = message.getPiId();
+        switch (message.getMessageType()) {
+            case PiUp:
+                piUp(piId);
+                break;
+            case PiDown:
+                piDown(piId);
+                break;
+            case OrderConfirmed:
+                orderConfirmed(piId, message.getOrderId());
+                break;
+        }
+    }
+
+    private Optional<NetworkControlMessage> parseMessage(String message) {
+        MappingIterator<NetworkControlMessage> mappingIterator = null;
+        try {
+            NetworkControlMessage networkControlMessage = null;
+            mappingIterator = reader.readValues(message);
+            if (mappingIterator.hasNext()) {
+                networkControlMessage = mappingIterator.next();
+            }
+            while (mappingIterator.hasNext()) {
+                log.warn("Ignoring extra message contained in input string {}", mappingIterator.next());
+            }
+            if (networkControlMessage == null) {
+                log.warn("Message did not contain any network control messages. {}", message);
+                return Optional.empty();
+            }
+            return Optional.of(networkControlMessage);
+        } catch (IOException e) {
+            log.error("Unable to parse json: {}", message);
+            return Optional.empty();
+        }
     }
 
     private void piUp(String piId) {
@@ -28,32 +83,12 @@ public class PiManager {
         if (listOfPies.contains(piId)) {
             String newPi = symbolAssignment.removePi(piId);
             List<String> newOrders = messageHistory.piDown(piId, newPi);
-            messageSender.sendMessage(newOrders, newPi);
+            messageSender.sendMessage(newPi, newOrders);
         }
     }
 
     private void orderConfirmed(String piId, Long orderId) {
         messageHistory.orderCompleted(piId, orderId);
-    }
-
-    public void executeMessage(String message) {
-       /* ByteBuffer bb = null;
-        int messageType = bb.get();
-        int orderId = 0;
-        if (messageType == 3) {
-            orderId = bb.getInt();
-        }
-        String piId = bb.asCharBuffer().toString();
-        if (messageType == 1) {
-            piUp(piId);
-        }
-        if (messageType == 2) {
-            piDown(piId);
-        }
-        if (messageType == 3) {
-            orderConfirmed(orderId, piId);
-        }*/
-
     }
 
 }

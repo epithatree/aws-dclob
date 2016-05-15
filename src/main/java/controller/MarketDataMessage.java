@@ -1,12 +1,12 @@
 package controller;
 
 
-public class ControllerMessage {
+public class MarketDataMessage {
     private final String message;
     private final long orderId;
     private final int symbol;
 
-    public ControllerMessage(String message, long orderId, int symbol) {
+    public MarketDataMessage(String message, long orderId, int symbol) {
         this.message = message;
         this.orderId = orderId;
         this.symbol = symbol;
@@ -27,7 +27,7 @@ public class ControllerMessage {
 
     @Override
     public String toString() {
-        return "ControllerMessage{" +
+        return "MarketDataMessage{" +
                 "message='" + message + '\'' +
                 ", orderId=" + orderId +
                 ", symbol=" + symbol +

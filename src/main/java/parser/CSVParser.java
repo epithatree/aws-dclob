@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import controller.ControllerMessage;
+import controller.MarketDataMessage;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public class CsvParser {
         executor = Executors.newSingleThreadExecutor();
     }
 
-    public void start(Queue<ControllerMessage> messageQueue) {
+    public void start(Queue<MarketDataMessage> messageQueue) {
         executor.execute(() -> {
             try {
                 File csvFile = new File(this.getClass().getResource("/input.csv").toURI());
@@ -43,9 +43,9 @@ public class CsvParser {
                 while (mappingIterator.hasNext()) {
                     try {
                         Message next = mappingIterator.next();
-                        ControllerMessage controllerMessage = convertMessage(next);
-                        messageQueue.add(controllerMessage);
-                        log.info(controllerMessage);
+                        MarketDataMessage marketDataMessage = convertMessage(next);
+                        messageQueue.add(marketDataMessage);
+                        log.info(marketDataMessage);
                     } catch (IllegalArgumentException e) {
                         log.error("Unable to convert message to json", e);
                     }
@@ -58,10 +58,10 @@ public class CsvParser {
         });
     }
 
-    private ControllerMessage convertMessage(Message message) {
+    private MarketDataMessage convertMessage(Message message) {
         try {
             String messageString = objectMapper.writeValueAsString(message);
-            return new ControllerMessage(messageString, message.getOrderId(), 0);
+            return new MarketDataMessage(messageString, message.getOrderId(), 0);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Unable to convert message to json");
         }

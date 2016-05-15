@@ -8,13 +8,13 @@ public class MessageReader {
     private MessageSender messageSender;
     private SymbolAssignment symbolAssignment;
 
-    private Queue<ControllerMessage> messageQueue;
+    private Queue<MarketDataMessage> messageQueue;
 
 
     public MessageReader(MessageHistory messageHistory,
                          SymbolAssignment symbolAssignment,
                          MessageSender messageSender,
-                         Queue<ControllerMessage> messageQueue) {
+                         Queue<MarketDataMessage> messageQueue) {
         this.messageHistory = messageHistory;
         this.symbolAssignment = symbolAssignment;
         this.messageSender = messageSender;
@@ -23,11 +23,11 @@ public class MessageReader {
 
     public void readAndSendNextMessage() {
 
-        ControllerMessage nextMessage = messageQueue.poll();
+        MarketDataMessage nextMessage = messageQueue.poll();
         if (nextMessage != null) {
             String nextPi = symbolAssignment.addSymbol(nextMessage.getSymbol());
-            messageHistory.addMessage(nextMessage.getMessage(), nextMessage.getOrderId(), nextPi);
-            messageSender.sendMessage(nextMessage.getMessage(), nextPi);
+            messageHistory.addMessage(nextPi, nextMessage.getOrderId(), nextMessage.getMessage());
+            messageSender.sendMessage(nextPi, nextMessage.getMessage());
         }
     }
 }

@@ -9,11 +9,11 @@ public class MessageSender {
         this.controllerNetwork = controllerNetwork;
     }
 
-    void sendMessage(String newOrders, String newPi) {
-        controllerNetwork.send((newOrders), newPi);
+    void sendMessage(String newPi, String newOrders) {
+        controllerNetwork.send(newOrders, newPi);
     }
 
-    void sendMessage(List<String> newOrders, String newPi) {
+    void sendMessage(String newPi, List<String> newOrders) {
         for (String newOrder : newOrders) {
             sendMessage(newOrder, newPi);
         }

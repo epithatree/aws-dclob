@@ -22,7 +22,7 @@ public class ControllerConfig {
         MessageHistory messageHistory = new MessageHistory();
         this.piManager = new PiManager(messageSender, symbolAssignment, messageHistory);
 
-        Queue<ControllerMessage> messageQueue = new LinkedBlockingQueue<>(10);
+        Queue<MarketDataMessage> messageQueue = new LinkedBlockingQueue<>(10);
 
         this.messageReader = new MessageReader(messageHistory, symbolAssignment, messageSender, messageQueue);
         CsvParser parser = new CsvParser();
