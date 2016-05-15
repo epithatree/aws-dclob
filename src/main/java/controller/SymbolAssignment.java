@@ -25,24 +25,6 @@ public class SymbolAssignment {
         return !piFrequencyList.isEmpty();
     }
 
-    String addSymbol(int symbol) { //returns id of a pi
-        if (piFrequencyList.isEmpty()) {
-            throw new IllegalStateException("No Pis currently available");
-        }
-        PiStatus piStatus = symbolMap.get(symbol);
-        if (piStatus != null) { //If the symbol has been seen before, returns the pi associated with that symbol
-            return piStatus.getId();
-        } else { //Assigns the symbol to the pi with the lowest number of symbols associated with it and returns the pi
-            piStatus = piFrequencyList.remove();
-            piStatus.addSymbol(symbol);
-            piFrequencyList.add(piStatus);
-            symbolMap.put(symbol, piStatus);
-            String piId = piStatus.getId();
-            log.info("Assigning symbol {} to pi {}", symbol, piId);
-            return piId;
-        }
-    }
-
     void addPi(String piId) { //Adds a pi to the pool available to have symbols assigned to them
         PiStatus newPiStatus = new PiStatus(piId);
         piFrequencyList.add(newPiStatus);
@@ -66,6 +48,24 @@ public class SymbolAssignment {
         }); //Assign all symbols to the new pi
         piFrequencyList.add(newPiStatus); //Add new pi status to the frequency list
         return newPiStatus.getId();
+    }
+
+    String addSymbol(int symbol) { //returns id of a pi
+        if (piFrequencyList.isEmpty()) {
+            throw new IllegalStateException("No Pis currently available");
+        }
+        PiStatus piStatus = symbolMap.get(symbol);
+        if (piStatus != null) { //If the symbol has been seen before, returns the pi associated with that symbol
+            return piStatus.getId();
+        } else { //Assigns the symbol to the pi with the lowest number of symbols associated with it and returns the pi
+            piStatus = piFrequencyList.remove();
+            piStatus.addSymbol(symbol);
+            piFrequencyList.add(piStatus);
+            symbolMap.put(symbol, piStatus);
+            String piId = piStatus.getId();
+            log.info("Assigning symbol {} to pi {}", symbol, piId);
+            return piId;
+        }
     }
 
 }
