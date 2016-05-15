@@ -3,10 +3,14 @@ package controller;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Log4j2
 public class PiManager {
@@ -22,7 +26,7 @@ public class PiManager {
         this.messageSender = messageSender;
         this.symbolAssignment = symbolAssignment;
         this.messageHistory = messageHistory;
-        
+
         listOfPies = new HashSet<>();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -52,7 +56,7 @@ public class PiManager {
     }
 
     private Optional<NetworkControlMessage> parseMessage(String message) {
-        MappingIterator<NetworkControlMessage> mappingIterator = null;
+        MappingIterator<NetworkControlMessage> mappingIterator;
         try {
             NetworkControlMessage networkControlMessage = null;
             mappingIterator = reader.readValues(message);
@@ -62,12 +66,12 @@ public class PiManager {
             while (mappingIterator.hasNext()) {
                 log.warn("Ignoring extra message contained in input string {}", mappingIterator.next());
             }
-            if (networkControlMessage == null) {
+            if (networkControlMessage == null || networkControlMessage.getMessageType() == null) {
                 log.warn("Message did not contain any network control messages. {}", message);
                 return Optional.empty();
             }
             return Optional.of(networkControlMessage);
-        } catch (IOException e) {
+        } catch (IOException | RuntimeJsonMappingException e) {
             log.error("Unable to parse json: {}", message);
             return Optional.empty();
         }
@@ -75,15 +79,22 @@ public class PiManager {
 
     private void piUp(String piId) {
         if (!listOfPies.contains(piId)) {
+            listOfPies.add(piId);
             symbolAssignment.add(piId);
+        } else {
+            log.warn("Received PiUp notification for {}, that pi was already listed as running.", piId);
         }
     }
 
     private void piDown(String piId) {
         if (listOfPies.contains(piId)) {
+            log.warn("{} has gone down", piId);
+            listOfPies.remove(piId);
             String newPi = symbolAssignment.removePi(piId);
             List<String> newOrders = messageHistory.piDown(piId, newPi);
             messageSender.sendMessage(newPi, newOrders);
+        } else {
+            log.warn("Received PiDown notification for {}, that pi was not listed as running.", piId);
         }
     }
 
