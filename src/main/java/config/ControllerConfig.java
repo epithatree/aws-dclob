@@ -19,7 +19,7 @@ public class ControllerConfig {
         this.controllerNetwork = new ActiveMqControllerNetwork();
 
         MessageSender messageSender = new MessageSender(controllerNetwork);
-        MessageHistory messageHistory = new MessageHistory(messageSender);
+        MessageHistory messageHistory = new MessageHistory();
         this.piManager = new PiManager(messageSender, symbolAssignment, messageHistory);
 
         Queue<ControllerMessage> messageQueue = new LinkedBlockingQueue<>(10);

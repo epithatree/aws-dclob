@@ -1,6 +1,5 @@
 package controller;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +32,12 @@ public class PiManager {
         }
     }
 
-    private void orderConfirmed(int orderId, String piId) {
-        messageHistory.orderCompleted(orderId, piId);
+    private void orderConfirmed(String piId, Long orderId) {
+        messageHistory.orderCompleted(piId, orderId);
     }
 
     public void executeMessage(String message) {
-        ByteBuffer bb = null;
+       /* ByteBuffer bb = null;
         int messageType = bb.get();
         int orderId = 0;
         if (messageType == 3) {
@@ -53,7 +52,7 @@ public class PiManager {
         }
         if (messageType == 3) {
             orderConfirmed(orderId, piId);
-        }
+        }*/
 
     }
 
